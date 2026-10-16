@@ -1,37 +1,68 @@
 <!DOCTYPE html>
 <html lang="si">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CodeCraft Sinhala</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>CodeCraft Sinhala Pro 🚀</title>
+    
+    <!-- PWA Theme Color for Mobile Status Bar -->
+    <meta name="theme-color" content="#111827">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Boxicons for modern icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
 
-  <header>
-    <h1>CodeCraft Sinhala 🚀</h1>
-    <p>Termux, Linux & Coding Commands සරල සිංහලෙන්</p>
-    <input type="text" id="searchInput" placeholder="Command එකක් සූම් කරන්න (Eg: pkg update, git)...">
-  </header>
+    <!-- Modern Glassmorphism Header -->
+    <header>
+        <div class="header-content">
+            <h1>CodeCraft <span class="highlight">Sinhala Pro</span> 🚀</h1>
+            <p>ස්මාර්ට් ලෙස Termux සහ Coding ඉගෙනගන්න</p>
+        </div>
+        <div class="search-container">
+            <i class='bx bx-search search-icon'></i>
+            <input type="text" id="searchInput" placeholder="PKG Update, Git, Python...">
+        </div>
+    </header>
 
-  <div class="categories">
-    <button class="cat-btn active" onclick="filterCategory('all')">සියල්ල</button>
-    <button class="cat-btn" onclick="filterCategory('termux')">Termux</button>
-    <button class="cat-btn" onclick="filterCategory('git')">Git & GitHub</button>
-    <button class="cat-btn" onclick="filterCategory('python')">Python</button>
-  </div>
+    <!-- Scrollable Modern Categories -->
+    <nav class="categories-container">
+        <div class="categories" id="categoryList">
+            <button class="cat-btn active" data-category="all">
+                <i class='bx bx-category'></i> සියල්ල
+            </button>
+            <button class="cat-btn" data-category="termux">
+                <i class='bx bx-terminal'></i> Termux
+            </button>
+            <button class="cat-btn" data-category="git">
+                <i class='bx bxl-git'></i> Git
+            </button>
+            <button class="cat-btn" data-category="python">
+                <i class='bx bxl-python'></i> Python
+            </button>
+        </div>
+    </nav>
 
-  <main id="commandList">
-    <!-- Commands JavaScript හරහා Render වේ -->
-  </main>
+    <!-- Command List with Glassmorphism Cards -->
+    <main id="commandList">
+        <!-- JS generates cards here -->
+    </main>
 
-  <script src="app.js"></script>
-  <script>
-    // Service Worker Registration for PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
-  </script>
+    <!-- Bottom Navigation Bar (Very Mobile-Friendly) -->
+    <footer class="bottom-nav">
+        <a href="#" class="nav-item active"><i class='bx bxs-home-circle'></i><span>Home</span></a>
+        <a href="#" class="nav-item"><i class='bx bx-star'></i><span>Favorites</span></a>
+        <a href="#" class="nav-item"><i class='bx bx-wrench'></i><span>Tools</span></a>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
 </body>
 </html>
