@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeCraft Sinhala</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+  <header>
+    <h1>CodeCraft Sinhala 🚀</h1>
+    <p>Termux, Linux & Coding Commands සරල සිංහලෙන්</p>
+    <input type="text" id="searchInput" placeholder="Command එකක් සූම් කරන්න (Eg: pkg update, git)...">
+  </header>
+
+  <div class="categories">
+    <button class="cat-btn active" onclick="filterCategory('all')">සියල්ල</button>
+    <button class="cat-btn" onclick="filterCategory('termux')">Termux</button>
+    <button class="cat-btn" onclick="filterCategory('git')">Git & GitHub</button>
+    <button class="cat-btn" onclick="filterCategory('python')">Python</button>
+  </div>
+
+  <main id="commandList">
+    <!-- Commands JavaScript හරහා Render වේ -->
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // Service Worker Registration for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
