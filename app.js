@@ -1,35 +1,59 @@
-// --- Expanded Command Data ---
+// ==========================================
+// 1. FIREBASE CONFIGURATION
+// ==========================================
+// Firebase Console එකෙන් ලැබෙන ඔයාගේ config එක මෙතනට දාන්න
+const firebaseConfig = {
+  apiKey: "AIzaSyAXQGwSh6WLI5gUc-ES5jbeBzMWsy8D7bk",
+  authDomain: "termux-ai-bot.firebaseapp.com",
+  projectId: "termux-ai-bot",
+  storageBucket: "termux-ai-bot.firebasestorage.app",
+  messagingSenderId: "68826876529",
+  appId: "1:68826876529:web:284fe17e98af6f692669d0"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// ==========================================
+// 2. COMMANDS DATA
+// ==========================================
 const commands = [
     // Termux
-    { title: "Termux PKG Update", desc: "මුලින්ම Termux Packages Update කරගන්න.", code: "pkg update && pkg upgrade -y", category: "termux" },
-    { title: "Storage Access ලබාගැනීම", desc: "Phone Storage එක Termux වලට Use කරන්න.", code: "termux-setup-storage", category: "termux" },
-    { title: "Python Install කිරීම", desc: "Python Env එක සාදාගන්න.", code: "pkg install python -y", category: "termux" },
-    { title: "NodeJS Install කිරීම", desc: "JavaScript Runtime එක Install කරන්න.", code: "pkg install nodejs -y", category: "termux" },
+    { title: "Termux PKG Update", desc: "Termux packages මුලින්ම update කරගන්න.", code: "pkg update && pkg upgrade -y", category: "termux" },
+    { title: "Storage Access Enable", desc: "Phone storage එක Termux වලට access දෙන්න.", code: "termux-setup-storage", category: "termux" },
+    { title: "Python Install", desc: "Python environment එක set up කරගන්න.", code: "pkg install python -y", category: "termux" },
+    { title: "NodeJS Install", desc: "JavaScript runtime environment එක install කරන්න.", code: "pkg install nodejs -y", category: "termux" },
     
     // Git
-    { title: "Git Repo Clone කිරීම", desc: "GitHub Repository එකක් download කරන්න.", code: "git clone <repository_url>", category: "git" },
-    { title: "Git Commit කිරීම", desc: "ඔයාගේ Code වෙනස්කම් Save කරන්න.", code: 'git commit -m "ඔයාගේ message එක"', category: "git" },
-    { title: "Git Push කිරීම", desc: "Save කරපු වෙනස්කම් GitHub එකට Upload කරන්න.", code: "git push", category: "git" },
+    { title: "Git Repo Clone", desc: "GitHub repository එකක් download කරගන්න.", code: "git clone <repository_url>", category: "git" },
+    { title: "Git Commit", desc: "Code වෙනස්කම් save කරගන්න.", code: 'git commit -m "ඔයාගේ message එක මෙතනට දෙන්න"', category: "git" },
+    { title: "Git Push", desc: "Save කරපු වෙනස්කම් GitHub එකට upload කරන්න.", code: "git push", category: "git" },
     
     // Python
-    { title: "Python Script එකක් Run කිරීම", desc: "හදපු Python File එකක් Run කරන්න.", code: "python script.name.py", category: "python" },
-    { title: "PIP Package එකක් Install කිරීම", desc: "Python Library එකක් download කරන්න.", code: "pip install <package_name>", category: "python" },
-    { title: "Virtual Env එකක් Active කිරීම", desc: "Isolated Env එකට ඇතුල් වෙන්න.", code: "source env/bin/activate", category: "python" }
+    { title: "Run Python Script", desc: "ඔයාගේ Python file එක run කරන්න.", code: "python script.py", category: "python" },
+    { title: "Install PIP Package", desc: "Python library එකක් download කරගන්න.", code: "pip install <package_name>", category: "python" },
+    { title: "Activate Virtual Env", desc: "Isolated environment එකට enter වෙන්න.", code: "source env/bin/activate", category: "python" }
 ];
 
-// --- UI Elements ---
+// UI Variables
 const commandList = document.getElementById('commandList');
 const searchInput = document.getElementById('searchInput');
 const categoryButtons = document.querySelectorAll('.cat-btn');
 
 let currentFilter = 'all';
 let searchTerm = '';
+let isSignUpMode = false;
 
-// --- Core Logic: Render & Filter ---
+// ==========================================
+// 3. UI RENDERING & FILTERING LOGIC
+// ==========================================
 function renderCommands() {
+    if (!commandList) return;
     commandList.innerHTML = '';
     
-    // Advanced Filtering Logic
     const filteredData = commands.filter(cmd => {
         const matchesCategory = (currentFilter === 'all' || cmd.category === currentFilter);
         const matchesSearch = (
@@ -52,9 +76,8 @@ function renderCommands() {
     }
 
     filteredData.forEach((item, index) => {
-        // Create card HTML with modern classes
         const cardHTML = `
-            <div class="card" style="animation: fadeInUp 0.5s ease forwards ${index * 0.1}s; opacity: 0;">
+            <div class="card" style="animation: fadeInUp 0.5s ease forwards ${index * 0.05}s; opacity: 0;">
                 <h3>${item.title}</h3>
                 <p>${item.desc}</p>
                 <div class="cmd-box">
@@ -69,12 +92,9 @@ function renderCommands() {
     });
 }
 
-// --- Interaction Logic ---
-
-// 1. One-Tap Copy with Animation
+// One-Tap Copy with Animation
 function copyCode(text, btn) {
     if (!navigator.clipboard) {
-        // Fallback for older browsers
         const textArea = document.createElement("textarea");
         textArea.value = text;
         document.body.appendChild(textArea);
@@ -96,43 +116,122 @@ function showCopyFeedback(btn) {
     btn.style.background = "var(--success)";
     btn.style.color = "#000";
     btn.style.borderColor = "var(--success)";
-    btn.style.transform = "scale(1.1)";
+    btn.style.transform = "scale(1.05)";
 
     setTimeout(() => {
         btn.innerHTML = originalContent;
-        btn.style = ""; // Reset inline styles
+        btn.style = "";
     }, 2000);
 }
 
-// 2. Real-time Search
-searchInput.addEventListener('input', (e) => {
-    searchTerm = e.target.value;
-    renderCommands();
-});
+// Search Event Listener
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value;
+        renderCommands();
+    });
+}
 
-// 3. Category Filter Click
+// Category Filter Listener
 categoryButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        // UI: change active button
-        document.querySelector('.cat-btn.active').classList.remove('active');
-        btn.classList.remove('inactive');
+        document.querySelector('.cat-btn.active')?.classList.remove('active');
         btn.classList.add('active');
-        
-        // Logic: apply filter
         currentFilter = btn.getAttribute('data-category');
         renderCommands();
     });
 });
 
-// --- Simple CSS Animation Injection ---
+// ==========================================
+// 4. FIREBASE REAL AUTHENTICATION LOGIC
+// ==========================================
+
+// Auth Modal Open/Close Toggle
+function toggleAuthModal(show) {
+    const modal = document.getElementById('authModal');
+    if (modal) {
+        modal.style.display = show ? 'flex' : 'none';
+    }
+}
+
+// Switch Login / Sign Up UI
+function switchAuthMode(e) {
+    e.preventDefault();
+    isSignUpMode = !isSignUpMode;
+    document.getElementById('authTitle').innerText = isSignUpMode ? 'Sign Up (ගිණුමක් සදාගැනීම)' : 'Log In (ඇතුල් වීම)';
+    document.getElementById('authSubmitBtn').innerText = isSignUpMode ? 'Sign Up' : 'Log In';
+    document.getElementById('authToggleMsg').innerText = isSignUpMode ? 'දැනටමත් ගිණුමක් තිබේද?' : 'ගිණුමක් නැද්ද?';
+    document.getElementById('authToggleLink').innerText = isSignUpMode ? 'Log In වන්න' : 'Sign Up වන්න';
+}
+
+// Handle Form Submission (Sign Up / Login)
+function handleAuth(e) {
+    e.preventDefault();
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+
+    if (isSignUpMode) {
+        // 1. SIGN UP WITH REAL EMAIL VERIFICATION LINK
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // Send Real Gmail Verification Link
+                userCredential.user.sendEmailVerification()
+                    .then(() => {
+                        alert("ගිණුම සාර්ථකයි! ඔබගේ உண்மையான Gmail එකට Verification Link එකක් යවන ලදී. කරුණාකර ඔබගේ Email එක පරීක්ෂා කර Verify කරගන්න.");
+                        auth.signOut(); // Verify කරනකන් Log වීම වළක්වයි
+                        toggleAuthModal(false);
+                    });
+            })
+            .catch((error) => alert("දෝෂයකි: " + error.message));
+    } else {
+        // 2. LOG IN WITH PASSWORD VALIDATION & EMAIL CHECK
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                
+                // Real Gmail Verified Check
+                if (user.emailVerified) {
+                    alert("සාර්ථකව Log In විය!");
+                    toggleAuthModal(false);
+                } else {
+                    alert("කරුණාකර ඔබගේ Gmail එකට පැමිණ ඇති Verification Link එක මඟින් ගිණුම සක්‍රීය (Verify) කරගන්න!");
+                    auth.signOut();
+                }
+            })
+            .catch((error) => alert("වරදක් ඇත: Password එක හෝ Email එක වැරදියි!"));
+    }
+}
+
+// Monitor User Authentication State
+auth.onAuthStateChanged((user) => {
+    const userSection = document.getElementById('userSection');
+    if (!userSection) return;
+
+    if (user && user.emailVerified) {
+        userSection.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:12px; color:var(--accent); font-weight:bold;">${user.email.split('@')[0]}</span>
+                <button class="copy-btn" onclick="auth.signOut()" style="border-color:#ef4444; color:#ef4444;">Log Out</button>
+            </div>
+        `;
+    } else {
+        userSection.innerHTML = `
+            <button id="loginModalBtn" class="copy-btn" onclick="toggleAuthModal(true)">
+                <i class='bx bx-user'></i> Log In
+            </button>
+        `;
+    }
+});
+
+// Inject Smooth Dynamic CSS Animation
 const styleSheet = document.createElement("style");
 styleSheet.innerText = `
     @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
+        from { opacity: 0; transform: translateY(15px); }
         to { opacity: 1; transform: translateY(0); }
     }
 `;
 document.head.appendChild(styleSheet);
 
-// --- Initial Render ---
+// Initial Load Render
 renderCommands();
